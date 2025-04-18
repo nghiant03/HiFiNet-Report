@@ -1,5 +1,3 @@
-%\documentclass[review]{elsarticle}
-
 \documentclass[preprint,12pt]{elsarticle}
 \usepackage{amsmath,amssymb,amsfonts}
 \usepackage{cases} 
@@ -163,14 +161,14 @@
 We present the enhanced version of the Hierarchical Target-oriented Multi-agent Coordination framework (HiT-MAC), a multi-agent collaborative system designed using multi-agent reinforcement learning (MARL) to tackle the target coverage problem in Directional Sensors network.
 
 This framework features a two-tier hierarchy that includes a centralized coordinator (high-level policy) and several distributed executors (low-level policy). During operation, (a) the coordinator gathers observations from the executors and assigns goals (specific targets to track) to each executor, while (b) each executor performs basic actions to achieve the designated goal for a set duration ($k$ time steps), focusing on tracking the assigned targets. After the execution of $k$ steps, the coordinator reactivates, and the process repeats with steps a and b. This approach effectively breaks down the target coverage problem in dynamic sensor networks (DSNs) into two sub-tasks at varying temporal levels.
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\linewidth]{graphics/MoE.png}
-    \caption{An overview of the HiT-MAC framework. 
-    Figure 1(a) shows the two-level hierarchy of HiT-MAC. Periodically (every $k$ steps), the high-level policy (coordinator) $\pi^H(\overset{\rightarrow}{g}| \overset{\rightarrow}{o})$ collects joint observations $\overset{\rightarrow}{o} = (o_1, \dots, o_n)$ from sensors and distributes target-specific goals $g_i$ to each low-level policy (executor). The executor $\pi_i^L(a_i| o_i, g_i)$ then directly interacts with the environment to track its assigned targets. Figure 1(b) presents the details of the coordinator and executor. The critics for both are employed only during the training of the networks. The solid line represents actions taken at each step, while the dashed line indicates actions executed every $k$ steps.}
-    \label{fig:hs-flowchart}
-    
-\end{figure}
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=\linewidth]{graphics/MoE.png}
+%     \caption{An overview of the HiT-MAC framework. 
+%     Figure 1(a) shows the two-level hierarchy of HiT-MAC. Periodically (every $k$ steps), the high-level policy (coordinator) $\pi^H(\overset{\rightarrow}{g}| \overset{\rightarrow}{o})$ collects joint observations $\overset{\rightarrow}{o} = (o_1, \dots, o_n)$ from sensors and distributes target-specific goals $g_i$ to each low-level policy (executor). The executor $\pi_i^L(a_i| o_i, g_i)$ then directly interacts with the environment to track its assigned targets. Figure 1(b) presents the details of the coordinator and executor. The critics for both are employed only during the training of the networks. The solid line represents actions taken at each step, while the dashed line indicates actions executed every $k$ steps.}
+%     \label{fig:hs-flowchart}
+%     
+% \end{figure}
 
 Both the coordinator and executors can be trained using contemporary single-agent reinforcement learning techniques (e.g., A3C) to optimize the expected future team reward (for the coordinator) and goal-specific rewards (for the executors). The team reward is influenced by the coverage rate, while the goal-conditioned reward reflects the performance of a sensor in tracking the assigned targets, assessed by the relative angle between the sensor and target. This dynamic can also be viewed as a collaborative effort between the coordinator and executors.
 
@@ -562,13 +560,13 @@ The coordinator is implemented using a deep neural network architecture, consist
 (1) Embedding Layer, (2) Context-Aware Module, (3) Reweighting Layer, (4) Feature Interaction Layer (FM), (5) Actor Module, (6) Critic Module.
 
 This hierarchical approach leverages deep learning to optimize task allocation and decision-making within the system.
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\linewidth]{graphics/Overview Embedding.png}
-    \caption{(a) The overall architecture of Context Aware Module. (b) Important Feature Extraction.}
-    \label{fig:context_aware_module}
-\end{figure}
-% \vspace{1em}
+% \begin{figure}[h]
+%     \centering
+%     \includegraphics[width=\linewidth]{graphics/Overview Embedding.png}
+%     \caption{(a) The overall architecture of Context Aware Module. (b) Important Feature Extraction.}
+%     \label{fig:context_aware_module}
+% \end{figure}
+% % \vspace{1em}
 
 \noindent\textbf{Embedding Layer:} From the initial joint observation $o_{i,j} = (i,j,\rho_{ij},\alpha_{ij})$, where $i$ and $j$ represent the sensor and target identifiers respectively, and $\rho_{ij}$ and $\alpha_{ij}$ are the real-valued distance and orientation angle formed between the sensor and the target, we will discretize these two values by segmenting the value ranges. Specifically, the discretized distance is defined as $\rho^*_{ij} =\lceil\frac{\rho_{ij}}{range\_size}\rceil $  and if $\rho^*_{ij}$ exceeds the environment size, it will be capped at that maximum value. The discretized angle is defined as $\alpha^*_{ij} =\lceil\frac{\alpha_{ij}}{range\_size}\rceil$. In this experiment, we choose $range\_size$ for $\rho$ and $\alpha$ to be $100$ and $15$, respectively.
 
@@ -631,12 +629,12 @@ z = u_0 + \sum_{i=1}^{n} u_i^* x_i + \sum_{i=1}^{n} \sum_{j=i+1}^{n} \langle e_i
 $\text{where } u_0 \text{ is the global bias, } x_i \text{ is the indicator of presentation of feature } i^{\text{th}}.$
 
 % \vspace{1em}
-\begin{figure}[h]
-    \centering  \includegraphics[width=\linewidth]{graphics/Integration.png}
-    \caption{Integrating Context-Aware Module with Actor-Critic Frameworks}
-    \label{fig:integration}
-    
-\end{figure}
+% \begin{figure}[h]
+%     \centering  \includegraphics[width=\linewidth]{graphics/Integration.png}
+%     \caption{Integrating Context-Aware Module with Actor-Critic Frameworks}
+%     \label{fig:integration}
+%     
+% \end{figure}
 \noindent\textbf{Actor:} The Actor module generates a goal map $\overset{\rightarrow}{g}\in\mathbb{N}^{n\times m} $ based on the interaction scores received from the Feature Interaction layer. It employs a sigmoid activation function to assign probabilities to each sensor-target pair. 
 \begin{equation}
     prob_{ij} = sigmoid(z)
@@ -674,12 +672,12 @@ with
 \]
 Here $\alpha_{\text{max}}$ is the maximum viewing angle of the sensor, $\alpha_{i,j,t}$ is the relative angle from the front of the sensor to the target $j$, $M_i$ is a set of targets selected for the sensor $i$ according to $g_i$; $cost_{i,t}$ is the power consumption, measured by the normalized moved angle $\frac{|\delta_{i,t} - \delta_{i,t-1}|}{z_{\delta}}$; $\delta_i$ represents the absolute orientation of sensor $i$, the cost weight $\beta = 0.01$ and $z_{\delta}$ is the rotation angle, that is $5^\circ$ in original setting.
 
-\begin{figure}[h]
-    \centering  \includegraphics[width=\linewidth]{graphics/Executor.png}
-    \caption{The process of Executor with Actor-Critic Frameworks}
-    \label{fig:executor}
-    
-\end{figure}
+% \begin{figure}[h]
+%     \centering  \includegraphics[width=\linewidth]{graphics/Executor.png}
+%     \caption{The process of Executor with Actor-Critic Frameworks}
+%     \label{fig:executor}
+%     
+% \end{figure}
 
 The executor module is also designed as a deep neural network architecture that incorporates the actor - critic framework. The observations are first processed through a state encoder, which has been redesigned from its original attention-based implementation. While the original encoder utilized an Attention Layer, we replaced this component with a Context-Aware Module (CAM), omitting the Mixture of Experts (MoE) framework. This design is equivalent to setting the number of experts to 1 and the top-k selection to 1.
 
@@ -783,12 +781,12 @@ update frequency & 20 & the master network updates every \# steps in A3C \\
 
 We use the coverage rate to evaluate the performance of each model. This metric quantifies the percentage of targets successfully covered by sensors relative to the total number of targets.
 \subsubsection{Scenario 1: Small-Scale Environment (RQ1)}
-\begin{figure}[h]
-    \centering  \includegraphics[width=\linewidth]{graphics/Results_final.png}
-    \caption{The learning curves of all methods}
-    \label{fig:result}
-    
-\end{figure}
+% \begin{figure}[h]
+%     \centering  \includegraphics[width=\linewidth]{graphics/Results_final.png}
+%     \caption{The learning curves of all methods}
+%     \label{fig:result}
+%     
+% \end{figure}
 As illustrated in Figure 5, our proposed model demonstrates significant superiority over the baseline model in achieving higher coverage rates (\%) over the course of approximately 100,000 training episodes. Our model not only converges to optimal performance more rapidly but also maintains consistently higher performance throughout the training process.
 
 Specifically, our model achieves a coverage rate of approximately 69\% by as early as 20,000 episodes, significantly surpassing the baseline model. By the conclusion of training, it stabilizes at an impressive coverage rate of around 71\%, indicating its robustness and effectiveness. In contrast, the original HiT-MAC model exhibits a much slower progression, with prolonged stagnation at approximately 55\% coverage for a significant portion of the early training episodes. This disparity highlights the efficacy of our approach in consistently progressing toward optimal coverage rates, in stark contrast to the oscillatory behavior exhibited by the original model.
