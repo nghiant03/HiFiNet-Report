@@ -1,29 +1,30 @@
-Wireless Sensor Networks (WSN) are widely used in a variety of fields such as healthcare, logistics, and military. The rapid advancement in
-Micro-Electro-Mechanical Systems (MEMS) technology has enabled the creation of smart sensors that are limited in their available resources but are
-significantly more cost efficient than traditional sensors \cite{Yick2008, Chai2020}. These networks can be deployed to provide real-time updates on 
-temperature, humidity, noise and other properties of the environment \cite{Yick2008, Chai2020, Ullo2020}.
+Wireless Sensor Networks (WSN) are widely used in a variety of fields such as healthcare, logistics, military, and envinronment monitoring. The rapid
+advancement in Micro-Electro-Mechanical Systems (MEMS) technology has enabled the creation of smart sensors that are limited in computation, energy
+and memory but are significantly more cost efficient than traditional sensors \cite{Yick2008, Chai2020}. These networks can be deployed to
+provide real-time updates on temperature, humidity, noise and other properties of the environment \cite{Yick2008, Chai2020, Ullo2020}.
 
 Because of their proliferation, environments in which WSNs are deployed are also very diverse, including highly dangerous, inaccessible environments
-\cite{Prasad2023}. Therefore, the data sent back to the base station can be erroneous, either from hardware, software, communication issues, or 
-any combination of the above. Depending on the angle of view, there are two main ways to categorize faults in the data: time-based and
+\cite{Prasad2023}. Therefore, the data sent back to the base station can be erroneous, either from hardware, software, communication issues, or any
+combination of the above. Depending on the angle of view, there are two main ways to categorize faults in the data: time-based and
 characteristic-based. From a time-based perspective, faults can be classified as soft permanent, intermittent, and transient faults \cite{Prasad2023}.
-According on the literature, characteristic-based fault types can vary, but often include offset, stuck-at and hardover faults with some
-additional types \cite{Shi2024, Saeed2021}.
+According on the literature, characteristic-based fault types can vary, but often include offset, stuck-at and hardover faults with some additional
+types \cite{Shi2024, Saeed2021}. Understanding these fault types informs the design of the detection algorithms, which we categorize next.
 
 Existing fault detection methods in WSNs include model-based approaches, data-driven approaches and hybrid information-based methods \cite{Shi2024}.
-The most common approach is a model-based algorithm, which utilize mathematical and statistical principles to model each fault type. The data-driven 
-approach on the other hand uses the analysis of data samples obtained to build a model for fault classification. Hybrid information-based methods use 
+The most common approach is a model-based algorithm, which utilize mathematical and statistical principles to model each fault type. The data-driven
+approach on the other hand uses the analysis of data samples obtained to build a model for fault classification. Hybrid information-based methods use
 both human knowledge and data through a combination of different methods. These algorithms can be further classified based on the input data used
-into: centralized, distributed and self-diagnosis methods \cite{Prasad2023, Takele2024}. Centralized fault classification requires information from the
-entire network to be collected and processes at a central location (usually the base station). Distributed methods offer more scalibility by dividing
-the network into cluster of sensors with a cluster leader responsible for fault classficication of its cluster. Self-diagnosis approachs requires each
-node to determine its own fault status based on only data collected from its sensors. In this work, we investigate the efficacy of a data-driven
-hierarchical method for WSNs fault diagnosis. The major contribution of this paper are as follows:
+into: centralized, distributed and self-diagnosis methods \cite{Prasad2023, Takele2024}. Centralized fault classification collects information from
+the entire network and processes at a central location (usually the base station). Distributed methods offer more scalibility by dividing the network
+into cluster of sensors with a cluster leader responsible for fault classficication of its cluster. Self-diagnosis approachs requires each node to
+determine its own fault status based on only data collected from its sensors. Prior work either focuses on temporal patterns at individual nodes or
+spatial relations across neighbors, but fails to integrate both effectively. In this work, we investigate the efficacy of a data-driven hierarchical
+method for WSNs fault diagnosis. The major contribution of this paper are as follows:
 
 \begin{itemize}
   \item We propose HiFiNet: a hierarchical network utilizing an Long Short-Tern Memory (LSTM) classifier for edge-based phase and a Graph Attention
     Network (GAT) for neighbor-aggregation phase
   \item Dataset composed of fault injected samples with five different fault types based on Intel Lab Dataset.
-  \item Results including various metrics such as: accuracy, F1-score, recall on the aforementioned dataset and comparision against methods in the
-    literature
+  \item Results include various metrics such as: accuracy, F1-score, recall on the aforementioned dataset, demonstrate improvement against methods in
+    the literature
 \end{itemize}
