@@ -1,14 +1,14 @@
 Wireless Sensor Networks (WSN) are widely used in a variety of fields such as healthcare, logistics, military, and envinronment monitoring. The rapid
 advancement in Micro-Electro-Mechanical Systems (MEMS) technology has enabled the creation of smart sensors that are limited in computation, energy
-and memory but are significantly more cost efficient than traditional sensors \cite{Yick2008, Chai2020}. These networks can be deployed to
-provide real-time updates on temperature, humidity, noise and other properties of the environment \cite{Yick2008, Chai2020, Ullo2020}.
+and memory but are significantly more cost efficient than traditional sensors \cite{Yick2008, Chai2020, Hussain2021}. These networks can be deployed
+to provide real-time updates on temperature, humidity, noise and other properties of the environment \cite{Yick2008, Chai2020, Ullo2020}.
 
 Because of their proliferation, environments in which WSNs are deployed are also very diverse, including highly dangerous, inaccessible environments
 \cite{Prasad2023}. Therefore, the data sent back to the base station can be erroneous, either from hardware, software, communication issues, or any
 combination of the above. Depending on the angle of view, there are two main ways to categorize faults in the data: time-based and
 characteristic-based. From a time-based perspective, faults can be classified as soft permanent, intermittent, and transient faults \cite{Prasad2023}.
 According on the literature, characteristic-based fault types can vary, but often include offset, stuck-at and hardover faults with some additional
-types \cite{Shi2024, Saeed2021}. Understanding these fault types informs the design of the detection algorithms, which we categorize next.
+types \cite{Shi2024, Saeed2021, Ni2009}. Understanding these fault types informs the design of the detection algorithms, which we categorize next.
 
 Existing fault detection methods in WSNs include model-based approaches, data-driven approaches and hybrid information-based methods \cite{Shi2024}.
 The most common approach is a model-based algorithm, which utilize mathematical and statistical principles to model each fault type. The data-driven
@@ -21,10 +21,7 @@ determine its own fault status based on only data collected from its sensors. Pr
 spatial relations across neighbors, but fails to integrate both effectively. In this work, we investigate the efficacy of a data-driven hierarchical
 method for WSNs fault diagnosis. The major contribution of this paper are as follows:
 
-\begin{itemize}
-  \item We propose HiFiNet: a hierarchical network utilizing an Long Short-Tern Memory (LSTM) classifier for edge-based phase and a Graph Attention
-    Network (GAT) for neighbor-aggregation phase
-  \item Dataset composed of fault injected samples with five different fault types based on Intel Lab Dataset.
-  \item Results include various metrics such as: accuracy, F1-score, recall on the aforementioned dataset, demonstrate improvement against methods in
-    the literature
-\end{itemize}
+\begin{itemize} \item We propose HiFiNet: a hierarchical network utilizing an Long Short-Tern Memory (LSTM) classifier for edge-based phase and a
+  Graph Attention Network (GAT) for neighbor-aggregation phase \item Dataset composed of fault injected samples with five different fault types based
+  on Intel Lab Dataset. \item Results include various metrics such as: accuracy, F1-score, recall on the aforementioned dataset, demonstrate
+  improvement against methods in the literature \end{itemize}
