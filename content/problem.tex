@@ -1,0 +1,12 @@
+\subsection{System Model}
+We consider a Wireless Sensor Network (WSN) as an undirected graph \(G=(V,E))\), where \(V=\{v_1, v_2, \ldots, v_N\}\) is the set of \(N\) sensor nodes and \(E \subseteq V \times V\) represents bidirectional communication links between neighboring nodes. Each node \(v_i\) is equipped with a sensing modality and generates a time-series measurement \(x_i(t)\) at discrete time steps \(t=1, 2, \ldots, T\). Communication between \(v_i\) and \(v_j\) is possible if \((v_i,v_j) \in E\). 
+
+This study make the following additional assumptions:
+\begin{itemize}
+  \item Static or Slowly Varying Topology: Sensor nodes are assumed to be stationary or exhibit negligible mobility during the diagnosis window, so that network links \(E\) remain constant or change infrequently.
+  \item Global Time Synchronization: Nodes maintain loosely synchronized clocks, ensuring measurements \(x_i(t)\) across the network align within a bounded jitter. 
+  \item Existence of a Single High-Capacity Node/Sink: A base node with higher computation and memory resources is reachable (directly or multi-hop) from all nodes and knows the network topology apriori. 
+\end{itemize}
+
+\subsection{Fault Taxonomy}
+\label{subsec:types}
