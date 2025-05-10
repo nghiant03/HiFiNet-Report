@@ -29,16 +29,37 @@ The first stage of HiFiNet is the Edge Classifier, which focuses on analyzing th
 
   The feature-extraction component is built from an LSTM-SAE with encoder layers. This autoencoder is trained in an unsupervised, layer-wise fashion to learn compressed representations of~\(X_w\).
 
+  Let \(E_l(\cdot; \theta_{E_l})\) be the \(l\)-th LSTM encoder layer with parameters \(\theta_{E_l}\), \(D_l(\cdot; \theta_{D_l})\) be the corresponding decoder layer with parameters \(\theta_{D_l}\), and \(H_l\) be the hidden representation output by \(E_l\). We have:
+
   \begin{itemize}
     \item \emph{Layer \(l=1\):}
       \[
         \begin{aligned}
-          H_1 &= E_1\bigl(X_w;\,\theta_{E_1}\bigr), \\
-          \hat X_w &= D_1\bigl(H_1;\,\theta_{D_1}\bigr) \\
+          H_1 &= E_1(X_w; \theta_{E_1}), \\
+          \hat X_w &= D_1(H_1; \theta_{D_1}) \\
+        \end{aligned}
+      \]
+      
+      With \(\hat X_w\) being the reconstructed input. Then the objective is to optimize the reconstruction loss with respective to the network parameters:
+
+      \[(\hat \theta_{E_1},\,\hat \theta_{D_1}) = \underset{\theta_{E_1}, \theta_{D_1}} {\arg\min} \mathcal L_{\text{recon}}(X_w; \hat X_w)\]
+    \item \emph{Layer \(l = 2, \ldots, L\)}
+
+      Let \(H^*_{l-1}\) be the output of the \((l-1)\)-th trained encoder layer. We have:
+      \[
+        \begin{aligned}
+          H_l &= E_l(H^*_{L-1}; \theta_{E_l}), \\ 
+          \hat H^*_{l-1} &= D_l(H_l; \theta_{D_l}), \\
         \end{aligned}
       \]
 
-      With \(E_1\) and \(D_1\) being the first encoder and decoder layer, and \(\theta_{E_1}\), \(\theta_{D_1}\) being their parameters respectively.
-      \[(\hat\theta_{E_1},\,\hat\theta_{D_1}) = \underset{\theta_{E_1}, \theta_{D_1}} {\arg\min} \mathcal L_{\mathrm{recon}}\bigl(X_w,\;\hat X_w\bigr).\]
+      With \(\hat H^*_{l-1}\) being the reconstructed input. Again the objective is to optimize the reconstruction loss with to the network parameters:
+
+      \[(\hat \theta_{E_l},\,\hat \theta_{D_l}) = \underset{\theta_{E_l}, \theta_{D_l}} {\arg\min} \mathcal L_{\text{recon}}(H^*_{l-1}; \hat H^*_{l-1})\]
   \end{itemize}
+  After all \(L\) layers are pre-trained, the full stacked LSTM encoder is formed by concatenating these trained layers: \(E_\text{stacked}(\cdot; \Theta^*_{E}) = E_L(\ldots E_1(\cdot; \theta^*_{E_L}) \ldots;\theta^*_{E_L})\)
+  
+  \item Phase 2: Fine-tuning for Classification (Edge Classifier)
+
+  The pre-trained stacked LSTM encoder, \(E_\text{stacked}\), now served as the feature extractor for the Edge Classifier. A classification head is attached to this encoder to create the Edge Classifier. The complete network is then trained using the labeled dataset.
 \end{itemize}
