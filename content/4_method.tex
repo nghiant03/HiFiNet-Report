@@ -1,22 +1,18 @@
 This section details the experimental methodology, including the dataset employed, the procedures for data pre-processing and synthetic fault injection, and the architecture of our proposed Hierarchical Fault Identification Network (HiFiNet) for fault classification in WSNs.
 
-\subsection{Dataset}
-\subsubsection{Data Source}
-The dataset used in this study is the Intel Lab Dataset. This dataset comprises readings from a network of 54 sensor nodes, specifically Mica2Dot devices, which were outfitted with environmental sensing capabilities. These nodes systematically captured time-stamped information relating to ambient conditions, including temperature, humidity, light levels, and the sensors' own voltage. The data acquisition process occurred at intervals of roughly 31 seconds for each sensor. The collection period for this particular dataset extended from late February 2004 through early April 2004 \cite{Intel2004}.
-
-\subsubsection{Fault Injection}
+\subsection{Fault Injection}
 To evaluate the performance of HiFiNet in classifying various fault types, synthetic faults were injected into the pre-processed normal temperature data. 
 
-For each experimental dataset created, faults were injected such that within the selected subset of six nodes (nodes 7-12), five nodes were each assigned a distinct fault type, and one node remained normal (i.e., its data was not corrupted). This setup allows for the analysis of one specific fault type per sensor in the context of other faulty and normal sensors.
+For each experimental dataset used, faults were injected such that within the selected subset of six nodes, five nodes were each assigned a distinct fault type, and one node remained normal. This setup allows for the analysis of one specific fault type per sensor in the context of other faulty and normal sensors.
 
-Multiple datasets were generated with varying overall percentages of faulty instances, specifically 5\%, 10\%, 15\%, and 20\% of the total data points being faulty. Within each dataset, the total fault rate was divided equally among the five predefined fault types. Faults were injected based on their mathematical models (as described in Section \ref{subsec:types}). In total, 4 datasets are created corresponding to each fault rate.
+Multiple datasets were generated with varying overall percentages of faulty instances, specifically 5\%, 10\%, 15\%, and 20\% of the total data points being faulty. Within each dataset, the total fault rate was divided equally among the five predefined fault types. Faults were injected based on their mathematical models (as described in Section \ref{subsec:types}). In total, 4 datasets are created from each original dataset corresponding to each fault rate.
 
 The time series sequences were labeled with a specific fault type if any sample within that sequence contained the corresponding injected fault. This creates a labeled dataset suitable for supervised learning.
 
 \subsection{Hierarchical Fault Identification Network (HiFiNet)}
-\begin{figure}[htbp]
+\begin{figure}
   \centering
-  \includegraphics[width=0.8\linewidth]{images/HiFiNet.png}
+  \includegraphics[width=0.65\linewidth]{images/HiFiNet.png}
   \caption{Proposed HiFiNet model, illustrating the Edge Classifier processing a target node's temperature sequence and the Network Classifier integrating edge outputs with contextual network data.}
   \label{fig:hifinet}
 \end{figure}
@@ -64,4 +60,31 @@ The first stage of HiFiNet is the Edge Classifier, which focuses on analyzing th
   The pre-trained stacked LSTM encoder, \(E_\text{stacked}\), now served as the feature extractor for the Edge Classifier. A classification head is attached to this encoder to create the Edge Classifier. The complete network is then trained using the labeled dataset.
 \end{itemize}
 
-\subsubsection{Network Classifier}
+\subsubsection{Iterative Graph Network}
+The second stage of HiFiNet is the Network Classifier, which refines the initial fault assessments or embeddings from the Edge Classifier by incorporating network-wide spatial context and inter-node dependencies. The core of the Network Classifier is an IGN.
+
+The IGN is designed to dynamically refine node representations by iteratively propagating and aggregating information across the graph, modulated by an evolving confidence measure. Let \(\mathcal{H}^{(0)} \in \mathbb{R}^{N \times d_0}\) be the vector representation of a node with \(N\) is the number of nodes and \(d_0\) is the dimension of the edge output. The IGN performs \(K\) iterations.
+
+In each iteration \(k = 0, \dots, K\):
+\begin{itemize}
+    \item Feature Modulation (for \(k > 0\)):
+      The initial node embeddings $\mathbf{H}^{(0)}$ are modulated based on a confidence score vector \(\mathbb{c}^{(k-1)} \in \mathbb{R}^{N \times 1}\), derived from the \((k-1)\)-th iteration's GAT output. A Confidence Modulator function, $\mathcal{M}_{\text{c}}$, is employed using Feature-wise Linear Modulation (FiLM):
+      \[\mathcal{H}'^{(k)} = \mathcal{M}_{\text{c}}(\mathcal{H}^{(0)}, \mathbb{c}^{(k-1)}) = g_{\gamma}(c^{(k-1)}) \odot \mathcal{H}^{(0)} + g_{\beta}(c^{(k-1)})\]
+    where \(g_{\gamma}(\cdot)\) and \(g_{\beta}(\cdot)\) are learnable functions that generate scaling and shifting parameters from the confidence scores, and \(\odot\) denotes element-wise multiplication. For the first iteration \(k=0\), no modulation is applied, so \(\mathcal{H}'^{(0)} = \mathcal{H}^{(0)}\). The Confidence Modulator allows the network to adaptively emphasize or de-emphasize features based on the current confidence in their classification.
+
+    \item Graph Attention Convolution (GAT) Block:
+    The modulated features \(\mathbb{H}'^{(k)}\) are then processed by a GAT block, denoted as \(\mathcal{G}\). This block typically consists of one or more Graph Attention Convolution layers, which enable nodes to selectively attend to their neighbors' features when updating their own representations:
+\[\mathcal{H}_{\text{G}}^{(k)} = \mathcal{G}(\mathcal{H}'^{(k)}, A)\]
+    where \(A\) is the adjacency matrix representing the graph structure. Each GAT layer computes attention coefficients for neighboring nodes, aggregates their features weighted by these coefficients, and applies a linear transformation. Layer normalization and activation functions  are often applied between GAT layers. Dropout are also used for regularization. The output \(\mathcal{H}_{\text{G}}^{(k)} \in \mathbb{R}^{N \times d_{\text{G}}}\) contains node representations that have incorporated information from their local graph neighborhood.
+
+    \item Temporary Classification and Confidence Update (if \(k < K-1)\):
+    If it is not the final iteration, the output \(\mathcal{H}_{\text{G}}^{(k)}\) is passed through a temporary classifier, \(f_{\text{temp}}\), to obtain intermediate class logits \(z^{(k)}\) for each node:
+    \[z^{(k)} = f_{\text{temp}}(\mathcal{H}_{\text{G}}^{(k)})\]
+    These logits are converted to probabilities $P^{(k)}$ using the softmax function:
+    \[P^{(k)} = \text{softmax}(\mathbf{z}^{(k)}) \]
+    The confidence score $c_i^{(k)}$ for each node $i$ is then derived from these probabilities, typically as the maximum probability value:
+    \[ c_i^{(k)} = \max(P_i^{(k)}) \]
+    This results in a confidence vector $\mathbf{c}^{(k)}$, which is then used in the Feature Modulation step of the next iteration ($k+1$). This iterative process allows the model to progressively refine its understanding by focusing subsequent GAT operations based on the certainty of intermediate predictions.
+\end{itemize}
+
+After \(K\) iterations, the final GAT output $\mathcal{H}_{\text{G}}^{(K_{iter}-1)}$ represents the spatially-refined node embeddings. This and the original representation are then passed to a classification head to output the network classification.
