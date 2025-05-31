@@ -1,7 +1,7 @@
 \subsection{System Model}
 We consider a WSN as an undirected graph \(G=(V,E))\), where \(V=\{v_1, v_2, \ldots, v_N\}\) is the set of \(N\) sensor nodes and \(E \subseteq V \times V\) represents bidirectional communication links between neighboring nodes. Each node \(v_i\) is equipped with a sensing modality and generates a time-series measurement \(x_i(t)\) at discrete time steps \(t=1, 2, \ldots, T\). Communication between \(v_i\) and \(v_j\) is possible if \((v_i,v_j) \in E\). 
 
-This study make the following additional assumptions:
+This paper make the following additional assumptions:
 \begin{itemize}
   \item Static or Slowly Varying Topology: Sensor nodes are assumed to be stationary or exhibit negligible mobility during the diagnosis window, so that network links \(E\) remain constant or change infrequently.
   \item Global Time Synchronization: Nodes maintain loosely synchronized clocks, ensuring measurements \(x_i(t)\) across the network align within a bounded jitter. 
@@ -42,10 +42,6 @@ where \(c\) is a constant value, either from the nearest normal value or a rando
 \subsection{Problem Statement}
 Given a segment of a sensor time series and a predefined set of fault classes, the problem is to assign the most appropriate fault class label to that time series segment.
 
-Let:
-\begin{itemize}
-  \item \(X_w = (x_t, x_(t+1), \ldots, x_(t+w-1))\) be an input time series segment of length \(w\), where \(x_i \in \mathbb{R}\) is the sensor reading at discrete time step \(i)\).
-  \item \(C = {c_1, c_2, \ldots, c_K}\) be the predefined set of \(K\) mutually exclusive fault classes as detailed in the fault taxonomy (see \ref{subsec:types}) and the normal (fault-free) class.
-\end{itemize}
+Consider an input time series \(X_w = (x_t, x_{t+1}, \ldots, x_{t+w-1})\) of length \(w\), where \(x_i \in \mathbb{R}\) is the sensor reading at discrete time step \(i\). Define \(C = {c_1, c_2, \ldots, c_K}\) as the set of \(K\) mutually exclusive fault classes as detailed in the fault taxonomy (see \ref{subsec:types}) and the normal (fault-free) class.
 
 The object is to learn a classification function (or hypothesis) \(h\) that maps the input feature vector \(\mathbf{x}\) (derived from \(X_w\)) to a predicted fault class label \(\hat{y}\ \in C\).
