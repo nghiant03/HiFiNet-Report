@@ -1,4 +1,4 @@
-In this section, we evaluated our proposed method against other methods in the literature. From previous research about fault diagnosis in WSNs, we selected Support Vector Machine(SVM), Deep Belief Network \cite{Prasad2023}, and LSTM Classifier.
+In this section, we evaluated our proposed method against other methods in the literature. From previous research about fault diagnosis in WSNs, we selected  Deep Belief Network \cite{Prasad2023}, LSTM-AE \cite{Khan2024}, and Support Vector Machine(SVM).
 
 \subsection{Dataset}
 For purpose of fault detection, we created an original dataset using data from NASA MERRA-2 reanalysis data (Temperature at 2 Meter) as substitution for measurements taken from a WSN \cite{GMAO2015}. The data is collected from the North Vietnam region from a period of roughly 6 months. Another dataset used for performance evaluation is the Intel Lab Dataset. This dataset comprises readings from a network of 54 sensor nodes, specifically Mica2Dot devices, which were outfitted with environmental sensing capabilities. These nodes systematically captured time-stamped information relating to ambient conditions, including temperature, humidity, light levels, and the sensors' own voltage. The data acquisition process occurred at intervals of roughly 31 seconds for each sensor. The collection period for this particular dataset extended from late February 2004 through early April 2004 \cite{Intel2004}.
@@ -107,3 +107,49 @@ Metric & Model & 5\% & 10\% & 15\% & 20\% & 5\% & 10\% & 15\% & 20\% \\
 \end{table}
 
 \subsection{Ablation Study: Accuracy Tradeoff versus Energy Efficiency of HiFiNet}
+To understand the specific contribution of the spatial aggregation component (the Network Classifier) and its associated energy cost, we conducted an ablation study. This analysis investigates the crucial trade-off between the accuracy gained by incorporating neighborhood data and the energy consumed in the process, a primary concern in resource-constrained WSNs. The study's goal is to provide insight into how HiFiNet can be configured for different operational requirements, balancing diagnostic performance with network lifetime.
+
+\subsubsection{Energy Consumption Model}
+
+To quantify the energy cost, we adopt a widely used first-order radio model for WSNs. The model accounts for the energy dissipated during signal transmission, reception, and processing. The energy for a relay node to transmit a message of \(l\) bits over a distance \(d\) is defined by:
+
+\begin{equation}
+E_T = 
+\begin{cases} 
+l(E_{elec} + \epsilon_{fs} \times d^2), & \text{if } d \le d_0 \\ 
+l(E_{elec} + \epsilon_{mp} \times d^4), & \text{if } d > d_0 
+\end{cases}
+\end{equation}
+
+Where \(E_{elec}\) is the energy dissipated per bit in the transmitter/receiver circuitry. The amplifier energy depends on the distance; $\epsilon_{fs}$ is used for the free space ($d^2$) model and $\epsilon_{mp}$ for the multipath fading ($d^4$) model. The threshold distance $d_0 = \sqrt{\epsilon_{fs} / \epsilon_{mp}}$ determines which model is used. The energy required to receive $l$ data bits is:
+
+\begin{equation}
+E_R = l \times E_{elec}
+\tag{21}
+\end{equation}
+
+Additionally, the energy for aggregating data, $E_a$, is calculated as:
+
+\begin{equation}
+E_a = l \times \epsilon_{da}
+\tag{22}
+\end{equation}
+
+In our model, we use standard parameter values where $E_{elec} = 50 \text{ nJ/bit}$, $\epsilon_{fs} = 10 \text{ pJ/bit/m}^2$, $\epsilon_{mp} = 0.0013 \text{ pJ/bit/m}^4$, and the data aggregation energy cost $\epsilon_{da}$ is $5 \text{ nJ/bit}$. The total energy spent ($E_{total}$) by a node is the sum of energies for receiving data from its neighbors, aggregating it, and transmitting the refined information. We define Energy Efficiency (EE) as the inverse of the total energy spent: $EE = 1 / E_{total}$.
+
+\subsubsection{Analysis of Accuracy vs. Efficiency}
+
+The ablation study compares the full HiFiNet architecture against its baseline component: the Edge Classifier operating in isolation (i.e., without the Network Classifier's spatial aggregation). The Accuracy Delta (\%) measures the performance improvement provided by the full HiFiNet over this baseline. We introduce a tunable parameter, Time Delay \(t\), which represents the frequency of execution for the Network Classifier. A time delay of \(t=0\) means the spatial aggregation is performed for every time window processed by the Edge Classifier. A delay of $t=k$ means the aggregation is performed only once every \(k+1\) time windows, using the last known aggregation result for the intermediate steps. This allows us to control the communication and computation overhead.
+
+The results of this trade-off are presented in Figure~\ref{fig:accuracy_tradeoff}. At a time delay of \(t=0\), the system performs continuous spatial aggregation. This yields the maximum diagnostic benefit, with HiFiNet achieving an Accuracy Delta of over \(3.1\%\) compared to the edge-only model. This configuration, however, is the most energy-intensive, resulting in the lowest Energy Efficiency (approx. 40 units).
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\textwidth]{images/accuracy_tradeoff.png} 
+    \caption{Accuracy Delta and Energy Efficiency versus Time Delay.  Accuracy Delta represents the performance gain from using the Network Classifier compared to the Edge Classifier alone. Energy Efficiency is inversely proportional to the energy consumed by the communication process.}
+    \label{fig:accuracy_tradeoff}
+\end{figure}
+
+Conversely, as the Time Delay \(t\) increases, the Network Classifier runs less frequently, drastically reducing the cumulative energy cost. This is reflected in the sharp, monotonic rise of the Energy Efficiency curve, which increases by more than rapidly goes from 0 to 11. This energy saving comes at the cost of accuracy. Since the spatial context is updated less often, its corrective influence diminishes, causing the Accuracy Delta to fall,  and it becomes marginal for $t > 8$.
+
+This analysis reveals that the system's configuration can be optimized based on deployment needs. For critical applications where maximum accuracy is paramount, a low time delay ($t=0$ or $t=1$) is ideal. However, for long-term monitoring where network longevity is the primary concern, a higher time delay (\(t\ge4\)) can provide substantial energy savings with a modest drop in performance. The region between \(t=1\) and \(t=3\) represents a compelling trade-off where a significant portion of the accuracy gain (1.1\% -- 1.6\%) is retained while achieving a 2--3\(\times\) improvement in energy efficiency over the most aggressive configuration. This demonstrates the flexibility of the HiFiNet architecture, allowing operators to tune the model to strike the right balance between diagnostic accuracy and operational lifetime.
