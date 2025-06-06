@@ -1,5 +1,12 @@
 \subsection{System Model}
-We consider a WSN as an undirected graph \(G=(V,E))\), where \(V=\{v_1, v_2, \ldots, v_N\}\) is the set of \(N\) sensor nodes and \(E \subseteq V \times V\) represents bidirectional communication links between neighboring nodes. Each node \(v_i\) is equipped with a sensing modality and generates a time-series measurement \(x_i(t)\) at discrete time steps \(t=1, 2, \ldots, T\). Communication between \(v_i\) and \(v_j\) is possible if \((v_i,v_j) \in E\). 
+Figure~\ref{fig:wsn} depicts the structure of a WSN used in our model. We consider a WSN as an undirected graph \(G=(V,E))\), where \(V=\{v_1, v_2, \ldots, v_N\}\) is the set of \(N\) sensor nodes and \(E \subseteq V \times V\) represents bidirectional communication links between neighboring nodes. Each node \(v_i\) is equipped with a sensing modality and generates a time-series measurement \(x_i(t)\) at discrete time steps \(t=1, 2, \ldots, T\). Communication between \(v_i\) and \(v_j\) is possible if \((v_i,v_j) \in E\). 
+
+\begin{figure}
+  \centering
+  \includegraphics[width=0.6\textwidth]{images/WSN.png}
+  \caption{Example of a WSN cluster with a base station. Target node is the node which data sequence needed fault classification.}
+  \label{fig:wsn}
+\end{figure}
 
 This paper make the following additional assumptions:
 \begin{itemize}
