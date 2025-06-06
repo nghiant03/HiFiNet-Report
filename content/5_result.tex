@@ -15,20 +15,20 @@ Accuracy measures the overall correctness of the classifier. It is the ratio of 
 
 Next, precision measures the proportion of positively predicted instances for class \(c_i\) that were actually correct. It is calculated as the ratio of true positives for class \(c_i\) to the sum of true positives and false positives for class \(c_i\).
 \begin{equation}
-\text{Precision}_i = \frac{TP_i}{TP_i + FP_i}
+  \text{Precision}_i = \frac{TP_i}{TP_i + FP_i}
 \end{equation}
 The weighted average precision is computed as:
 \begin{equation}
-\text{Weighted Precision} = \sum_{i=1}^{K} \left( \frac{N_i}{N} \times \text{Precision}_i \right)
+  \text{Weighted Precision} = \sum_{i=1}^{K} \left( \frac{N_i}{N} \times \text{Precision}_i \right)
 \end{equation}
 
 Finally, the F1-score is the harmonic mean of precision and recall for a class \(c_i\), providing a single score that balances both concerns.
 \begin{equation}
-\text{F1-score}_i = 2 \times \frac{\text{Precision}_i \times \text{Recall}_i}{\text{Precision}_i + \text{Recall}_i}
+  \text{F1-score}_i = 2 \times \frac{\text{Precision}_i \times \text{Recall}_i}{\text{Precision}_i + \text{Recall}_i}
 \end{equation}
 Similarly, the weighted average F1-score is calculated by:
 \begin{equation}
-\text{Weighted F1-score} = \sum_{i=1}^{K} \left( \frac{N_i}{N} \times \text{F1-score}_i \right)
+  \text{Weighted F1-score} = \sum_{i=1}^{K} \left( \frac{N_i}{N} \times \text{F1-score}_i \right)
 \end{equation}
 
 % TODO: Add parameter settings
@@ -38,10 +38,10 @@ Similarly, the weighted average F1-score is calculated by:
 The overall classification accuracy, shown in Figure~\ref{fig:accuracy}, demonstrates a substantial uplift from HiFiNet. HiFiNet maintains a \(2\sim6\%\) accuracy advantage over the second-best model LSTM-AE. SVM and DBN lag behind with sub \(90\%\) and sub \(80\%\) accuracies respectively across datasets. More importantly, the accuracy of HiFiNet does not degrade significantly as fault rate increases when compared to other methods. This indicates that information from neighbors collected in HiFiNet has a major impact in stabilizing the performance when noise becomes more prevalent
 
 \begin{figure}
-\centering
-\includegraphics[width=\linewidth]{images/accuracy.png}
-\caption{Accuracy versus Fault Rate comparison between HiFiNet and other methods.}
-\label{fig:accuracy}
+  \centering
+  \includegraphics[width=\linewidth]{images/accuracy.png}
+  \caption{Accuracy versus Fault Rate comparison between HiFiNet and other methods.}
+  \label{fig:accuracy}
 \end{figure}
 
 Figure~\ref{fig:f1} plots the F1-Score against the rising fault rates. This further reinforce HiFiNet robustness under noisy condition. HiFiNet achieve upwards of \(94.70\%\) and \(92.32\%\) for MERRA-2 and Intel \(5\%\) fault rate datasets respectively. Compare to LSTM-AE, SVM and DBN, this means a performance delta of \(2\)-\(20\%\) and \(4\)-\(16\%\) on the corresponding datasets, with other fault rate datasets following a similar story. These results suggests that temporal and spatial features utilization has contributes significantly to HiFiNet ability to accurately diagnose each class.
@@ -74,36 +74,36 @@ Next, Figure~\ref{fig:f1_drop} provides a direct, quantitative measure of model 
 While the previous figures provide a visual analysis of key performance trends, tHe complete numerical results for all metrics are consolidated in Table~\ref{tab:metrics} for reference.
 
 \begin{table}
-\centering
-\resizebox{\linewidth}{!}{%
-\begin{tabular}{@{}llrrrrrrrr@{}}
-\toprule
-& & \multicolumn{4}{c}{MERRA-2} & \multicolumn{4}{c}{INTEL} \\
-\cmidrule(lr){3-6} \cmidrule(lr){7-10}
-Metric & Model & 5\% & 10\% & 15\% & 20\% & 5\% & 10\% & 15\% & 20\% \\
-\midrule
-\multirow{4}{*}{Accuracy} 
-       & HiFiNet   & \textbf{95.20} & \textbf{94.66} & \textbf{93.23} & \textbf{92.78} & \textbf{93.08} & \textbf{90.75} & \textbf{89.50} & \textbf{88.87} \\
-& LSTM-AE   & 93.42 & 91.49 & 89.46 & 86.07 & 90.44 & 87.11 & 83.40 & 77.42 \\
-& SVM       & 88.63 & 85.05 & 82.27 & 78.68 & 87.16 & 83.77 & 79.24 & 70.06 \\
-& DBN       & 76.95 & 73.60 & 68.82 & 69.42 & 85.09 & 75.34 & 76.28 & 72.01 \\
-\midrule
-\multirow{4}{*}{F1-Score} 
-& HiFiNet   & \textbf{94.70} & \textbf{94.49} & \textbf{93.12} & \textbf{92.64} & \textbf{92.32} & \textbf{89.50} & \textbf{88.99} & \textbf{88.39} \\
-& LSTM-AE   & 92.04 & 90.68 & 88.68 & 85.37 & 88.39 & 84.66 & 82.32 & 75.77 \\
-& SVM       & 86.62 & 81.68 & 79.64 & 75.43 & 81.57 & 78.19 & 71.89 & 62.30 \\
-& DBN       & 70.72 & 62.89 & 58.39 & 52.60 & 76.02 & 63.65 & 63.65 & 64.39 \\
-\midrule
-\multirow{4}{*}{Precision} 
-& HiFiNet   & \textbf{95.21} & \textbf{94.52} & \textbf{93.55} & \textbf{92.89} & \textbf{92.55} & \textbf{91.76} & \textbf{90.16} & \textbf{90.32} \\
-& LSTM-AE   & 92.10 & 90.90 & 89.35 & 85.55 & 89.53 & 86.63 & 82.71 & 76.28 \\
-& SVM       & 86.95 & 82.78 & 81.62 & 79.20 & 76.89 & 73.96 & 67.30 & 69.08 \\
-& DBN       & 70.47 & 60.98 & 53.12 & 59.14 & 72.43 & 66.77 & 57.48 & 65.95 \\
-\bottomrule
-\end{tabular}
-}
-\caption{Comprehensive performance metrics of each method on all datasets.}
-\label{tab:metrics}
+  \centering
+  \resizebox{\linewidth}{!}{%
+    \begin{tabular}{@{}llrrrrrrrr@{}}
+      \toprule
+      & & \multicolumn{4}{c}{MERRA-2} & \multicolumn{4}{c}{INTEL} \\
+      \cmidrule(lr){3-6} \cmidrule(lr){7-10}
+      Metric & Model & 5\% & 10\% & 15\% & 20\% & 5\% & 10\% & 15\% & 20\% \\
+      \midrule
+      \multirow{4}{*}{Accuracy}
+      & HiFiNet   & \textbf{95.20} & \textbf{94.66} & \textbf{93.23} & \textbf{92.78} & \textbf{93.08} & \textbf{90.75} & \textbf{89.50} & \textbf{88.87} \\
+      & LSTM-AE   & 93.42 & 91.49 & 89.46 & 86.07 & 90.44 & 87.11 & 83.40 & 77.42 \\
+      & SVM       & 88.63 & 85.05 & 82.27 & 78.68 & 87.16 & 83.77 & 79.24 & 70.06 \\
+      & DBN       & 76.95 & 73.60 & 68.82 & 69.42 & 85.09 & 75.34 & 76.28 & 72.01 \\
+      \midrule
+      \multirow{4}{*}{F1-Score}
+      & HiFiNet   & \textbf{94.70} & \textbf{94.49} & \textbf{93.12} & \textbf{92.64} & \textbf{92.32} & \textbf{89.50} & \textbf{88.99} & \textbf{88.39} \\
+      & LSTM-AE   & 92.04 & 90.68 & 88.68 & 85.37 & 88.39 & 84.66 & 82.32 & 75.77 \\
+      & SVM       & 86.62 & 81.68 & 79.64 & 75.43 & 81.57 & 78.19 & 71.89 & 62.30 \\
+      & DBN       & 70.72 & 62.89 & 58.39 & 52.60 & 76.02 & 63.65 & 63.65 & 64.39 \\
+      \midrule
+      \multirow{4}{*}{Precision}
+      & HiFiNet   & \textbf{95.21} & \textbf{94.52} & \textbf{93.55} & \textbf{92.89} & \textbf{92.55} & \textbf{91.76} & \textbf{90.16} & \textbf{90.32} \\
+      & LSTM-AE   & 92.10 & 90.90 & 89.35 & 85.55 & 89.53 & 86.63 & 82.71 & 76.28 \\
+      & SVM       & 86.95 & 82.78 & 81.62 & 79.20 & 76.89 & 73.96 & 67.30 & 69.08 \\
+      & DBN       & 70.47 & 60.98 & 53.12 & 59.14 & 72.43 & 66.77 & 57.48 & 65.95 \\
+      \bottomrule
+    \end{tabular}
+  }
+  \caption{Comprehensive performance metrics of each method on all datasets.}
+  \label{tab:metrics}
 \end{table}
 
 \subsection{Ablation Study: Accuracy Tradeoff versus Energy Efficiency of HiFiNet}
@@ -114,25 +114,25 @@ To understand the specific contribution of the spatial aggregation component (th
 To quantify the energy cost, we adopt a widely used first-order radio model for WSNs. The model accounts for the energy dissipated during signal transmission, reception, and processing. The energy for a relay node to transmit a message of \(l\) bits over a distance \(d\) is defined by:
 
 \begin{equation}
-E_T = 
-\begin{cases} 
-l(E_{elec} + \epsilon_{fs} \times d^2), & \text{if } d \le d_0 \\ 
-l(E_{elec} + \epsilon_{mp} \times d^4), & \text{if } d > d_0 
-\end{cases}
+  E_T =
+  \begin{cases}
+    l(E_{elec} + \epsilon_{fs} \times d^2), & \text{if } d \le d_0 \\
+    l(E_{elec} + \epsilon_{mp} \times d^4), & \text{if } d > d_0
+  \end{cases}
 \end{equation}
 
 Where \(E_{elec}\) is the energy dissipated per bit in the transmitter/receiver circuitry. The amplifier energy depends on the distance; $\epsilon_{fs}$ is used for the free space ($d^2$) model and $\epsilon_{mp}$ for the multipath fading ($d^4$) model. The threshold distance $d_0 = \sqrt{\epsilon_{fs} / \epsilon_{mp}}$ determines which model is used. The energy required to receive $l$ data bits is:
 
 \begin{equation}
-E_R = l \times E_{elec}
-\tag{21}
+  E_R = l \times E_{elec}
+  \tag{21}
 \end{equation}
 
 Additionally, the energy for aggregating data, $E_a$, is calculated as:
 
 \begin{equation}
-E_a = l \times \epsilon_{da}
-\tag{22}
+  E_a = l \times \epsilon_{da}
+  \tag{22}
 \end{equation}
 
 In our model, we use standard parameter values where $E_{elec} = 50 \text{ nJ/bit}$, $\epsilon_{fs} = 10 \text{ pJ/bit/m}^2$, $\epsilon_{mp} = 0.0013 \text{ pJ/bit/m}^4$, and the data aggregation energy cost $\epsilon_{da}$ is $5 \text{ nJ/bit}$. The total energy spent ($E_{total}$) by a node is the sum of energies for receiving data from its neighbors, aggregating it, and transmitting the refined information. We define Energy Efficiency (EE) as the inverse of the total energy spent: $EE = 1 / E_{total}$.
@@ -144,10 +144,10 @@ The ablation study compares the full HiFiNet architecture against its baseline c
 The results of this trade-off are presented in Figure~\ref{fig:accuracy_tradeoff}. At a time delay of \(t=0\), the system performs continuous spatial aggregation. This yields the maximum diagnostic benefit, with HiFiNet achieving an Accuracy Delta of over \(3.1\%\) compared to the edge-only model. This configuration, however, is the most energy-intensive, resulting in the lowest Energy Efficiency (approx. 40 units).
 
 \begin{figure}
-    \centering
-    \includegraphics[width=\textwidth]{images/accuracy_tradeoff.png} 
-    \caption{Accuracy Delta and Energy Efficiency versus Time Delay.  Accuracy Delta represents the performance gain from using the Network Classifier compared to the Edge Classifier alone. Energy Efficiency is inversely proportional to the energy consumed by the communication process.}
-    \label{fig:accuracy_tradeoff}
+  \centering
+  \includegraphics[width=\textwidth]{images/accuracy_tradeoff.png}
+  \caption{Accuracy Delta and Energy Efficiency versus Time Delay.  Accuracy Delta represents the performance gain from using the Network Classifier compared to the Edge Classifier alone. Energy Efficiency is inversely proportional to the energy consumed by the communication process.}
+  \label{fig:accuracy_tradeoff}
 \end{figure}
 
 Conversely, as the Time Delay \(t\) increases, the Network Classifier runs less frequently, drastically reducing the cumulative energy cost. This is reflected in the sharp, monotonic rise of the Energy Efficiency curve, which increases by more than rapidly goes from 0 to 11. This energy saving comes at the cost of accuracy. Since the spatial context is updated less often, its corrective influence diminishes, causing the Accuracy Delta to fall,  and it becomes marginal for $t > 8$.

@@ -1,29 +1,29 @@
 \subsection{System Model}
-Figure~\ref{fig:wsn} depicts the structure of a WSN used in our model. We consider a WSN as an undirected graph \(G=(V,E))\), where \(V=\{v_1, v_2, \ldots, v_N\}\) is the set of \(N\) sensor nodes and \(E \subseteq V \times V\) represents bidirectional communication links between neighboring nodes. Each node \(v_i\) is equipped with a sensing modality and generates a time-series measurement \(x_i(t)\) at discrete time steps \(t=1, 2, \ldots, T\). Communication between \(v_i\) and \(v_j\) is possible if \((v_i,v_j) \in E\). 
+Figure~\ref{fig:wsn} depicts the structure of a WSN used in our model. We consider a WSN as an undirected graph \(G=(V,E))\), where \(V=\{v_1, v_2, \ldots, v_N\}\) is the set of \(N\) sensor nodes and \(E \subseteq V \times V\) represents bidirectional communication links between neighboring nodes. Each node \(v_i\) is equipped with a sensing modality and generates a time-series measurement \(x_i(t)\) at discrete time steps \(t=1, 2, \ldots, T\). Communication between \(v_i\) and \(v_j\) is possible if \((v_i,v_j) \in E\).
 
 \begin{figure}
-  \centering
-  \includegraphics[width=0.6\linewidth]{images/WSN.png}
-  \caption{Example of a WSN cluster with a base station. Target node is the node which data sequence needed fault classification.}
-  \label{fig:wsn}
+\centering
+\includegraphics[width=0.6\linewidth]{images/WSN.png}
+\caption{Example of a WSN cluster with a base station. Target node is the node which data sequence needed fault classification.}
+\label{fig:wsn}
 \end{figure}
 
 This paper make the following additional assumptions:
 \begin{itemize}
-  \item Static or Slowly Varying Topology: Sensor nodes are assumed to be stationary or exhibit negligible mobility during the diagnosis window, so that network links \(E\) remain constant or change infrequently.
-  \item Global Time Synchronization: Nodes maintain loosely synchronized clocks, ensuring measurements \(x_i(t)\) across the network align within a bounded jitter. 
-  \item Existence of a Single High-Capacity Node/Sink: A base node with higher computation and memory resources is reachable (directly or multi-hop) from all nodes and knows the network topology apriori. 
+\item Static or Slowly Varying Topology: Sensor nodes are assumed to be stationary or exhibit negligible mobility during the diagnosis window, so that network links \(E\) remain constant or change infrequently.
+\item Global Time Synchronization: Nodes maintain loosely synchronized clocks, ensuring measurements \(x_i(t)\) across the network align within a bounded jitter.
+\item Existence of a Single High-Capacity Node/Sink: A base node with higher computation and memory resources is reachable (directly or multi-hop) from all nodes and knows the network topology apriori.
 \end{itemize}
 
 \subsection{Fault Taxonomy}
 \label{subsec:types}
-Building upon the general categorization of faults, this section details the specific characteristic-based fault types that are the focus of our detection and diagnosis efforts. These faults represent common anomalies observed in WSN sensor readings and are well-documented in the literature \cite{Saeed2021, Hasan2024, Shi2024, Ni2009}. Understanding their distinct signatures is essential for designing robust fault detection and classification algorithms. The faults considered in this study are: hardover, drift, spike, erratic, and stuck-at fault. 
+Building upon the general categorization of faults, this section details the specific characteristic-based fault types that are the focus of our detection and diagnosis efforts. These faults represent common anomalies observed in WSN sensor readings and are well-documented in the literature \cite{Saeed2021, Hasan2024, Shi2024, Ni2009}. Understanding their distinct signatures is essential for designing robust fault detection and classification algorithms. The faults considered in this study are: hardover, drift, spike, erratic, and stuck-at fault.
 
 \subsubsection{Hardover Fault}
 A hardover fault, also commonly referred to as a bias fault, occurs when the sensor's output signal experiences a sudden and persistent shift by a constant offset from its normal operational range \cite{Saeed2021, Shi2024, Hasan2024}. The sensor continues to respond to changes in the measured variable, but all readings are offset by this fixed amount. This can be caused by issues like calibration errors or a sudden change in the sensor's baseline. If \(S_\text{normal}(t)\) is the true sensor reading at time \(t\), the faulty signal, \(S_\text{hardover}(t)\), can be represented as:
 \begin{equation}
-  S_\text{hardover}(t) = S_\text{normal}(t) + b,
-  \label{eq:hardover}
+S_\text{hardover}(t) = S_\text{normal}(t) + b,
+\label{eq:hardover}
 \end{equation}
 where \(b\) is a constant bias value \cite{Saeed2021}.
 
