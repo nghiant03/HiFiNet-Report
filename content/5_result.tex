@@ -31,7 +31,8 @@ Similarly, the weighted average F1-score is calculated by:
   \text{Weighted F1-score} = \sum_{i=1}^{K} \left( \frac{N_i}{N} \times \text{F1-score}_i \right)
 \end{equation}
 
-\subsection{Experiment Parameters}
+\subsection{Experiment Settings}
+All experiment is implemented in Python and run inside Kaggle Notebook with a P100 GPU.
 
 \subsection{Evaluation Result}
 The overall classification accuracy, shown in Figure~\ref{fig:accuracy}, demonstrates a substantial uplift from HiFiNet. HiFiNet maintains a \(2\sim6\%\) accuracy advantage over the second-best model LSTM-AE. SVM and DBN lag behind with sub \(90\%\) and sub \(80\%\) accuracies respectively across datasets. More importantly, the accuracy of HiFiNet does not degrade significantly as fault rate increases when compared to other methods. This indicates that information from neighbors collected in HiFiNet has a major impact in stabilizing the performance when noise becomes more prevalent
