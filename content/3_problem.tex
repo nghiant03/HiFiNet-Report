@@ -64,6 +64,6 @@ where \(c\) is a constant value, either from the nearest normal value or a rando
 \subsection{Problem Statement}
 Given a segment of a sensor time series and a predefined set of fault classes, the problem is to assign the most appropriate fault class label to that time series segment.
 
-Consider an input time series \(X_w = (x_t, x_{t+1}, \ldots, x_{t+w-1})\) of length \(w\), where \(x_i \in \mathbb{R}\) is the sensor reading at discrete time step \(i\). Define \(C = {c_1, c_2, \ldots, c_K}\) as the set of \(K\) mutually exclusive fault classes as detailed in the fault taxonomy in Section~\ref{subsec:types} and the normal (fault-free) class.
+Consider an input time series \(X_w = (x_t, x_{t+1}, \ldots, x_{t+w-1})\) of length \(w\), where \(x_i \in \mathbb{R}\) is the sensor reading at discrete time step \(i\). Define \(C = \{c_1, c_2, \ldots, c_K\}\) as the set of \(K\) mutually exclusive fault classes as detailed in the fault taxonomy in Section~\ref{subsec:types} and the normal (fault-free) class.
 
 The object is to learn a classification function (or hypothesis) \(h\) that maps the input feature vector \(\mathbf{x}\) (derived from \(X_w\)) to a predicted fault class label \(\hat{y}\ \in C\).
