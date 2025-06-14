@@ -32,6 +32,16 @@ Similarly, the weighted average F1-score is calculated by:
 \end{equation}
 
 \subsection{Experiment Settings}
+
+\begin{itemize}
+The experiment was conducted with the following parameters:
+  \item Test period: 2024-05-24 to 2024-07-01 (MERRA-2), 2004-03-06 to 2004-03-07 (Intel)
+  \item \(b_\text{hardover}\ = 5\)
+  \item \(b_\text{drift} = 0.3\)
+  \item \(b_\text{spike} = 3\)
+  \item \(\eta_\text{erratic} = 2\eta_\text{normal}\)
+\end{itemize}
+
 All experiment is implemented in Python and run inside Kaggle Notebook with a P100 GPU.
 
 \subsection{Evaluation Result}
