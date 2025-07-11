@@ -3,6 +3,21 @@ In this section, we evaluated our proposed method against other methods in the l
 \subsection{Dataset}
 For purpose of fault detection, we created an original dataset using data from NASA MERRA-2 reanalysis data (Temperature at 2 Meter) as substitution for measurements taken from a WSN \cite{GMAO2015}. The data is collected from the North Vietnam region from a period of roughly 6 months. Another dataset used for performance evaluation is the Intel Lab Dataset. This dataset comprises readings from a network of 54 sensor nodes, specifically Mica2Dot devices, which were outfitted with environmental sensing capabilities. These nodes systematically captured time-stamped information relating to ambient conditions, including temperature, humidity, light levels, and the sensors' own voltage. The data acquisition process occurred at intervals of roughly 31 seconds for each sensor. The collection period for this particular dataset extended from late February 2004 through early April 2004 \cite{Intel2004}.
 
+\subsection{Fault Injection}
+A key challenge in developing fault detection systems in WSNs is the scarcity of real-world fault data, making it difficult to test a model's robustness. Therefore, to evaluate the performance of HiFiNet in realistic environment, synthetic faults were injected into the pre-processed normal temperature data.
+
+For each experimental dataset used, six node is chosen as a representative of a typical cluster (\(n \approx 6\)). Each node is injected only one type of fault to isolate the influence of each fault on the sensor readings. This setup allows for the analysis of one specific fault type per sensor in the context of other faulty and normal sensors.
+
+Multiple datasets were generated with varying overall percentages of faulty instances, specifically 5\%, 10\%, 15\%, and 20\% of the total data points being faulty. Analysis of real world data have shown \(<20\%\) readings faults in WSNs. Within each dataset, the total fault rate was divided equally among the five predefined fault types. Faults were injected based on their mathematical models Equation \ref{eq:hardover}, \ref{eq:drift}, \ref{eq:spike}, \ref{eq:erratic}, and \ref{eq:stuck}. In total, 4 datasets are created from each original dataset corresponding to each fault rate.
+
+The process for injecting fault to the dataset involves three main steps:
+\begin{itemize}
+    \item Filter the original dataset by chosen nodes and time range
+    \item Fault rate and the appropriate fault type are chosen for each node
+    \item Inject fault to each sample using Equation \ref{eq:hardover}, \ref{eq:drift}, \ref{eq:spike}, \ref{eq:erratic}, and \ref{eq:stuck}
+\end{itemize}
+A sequence is assigned a specific fault type's label if \textbf{any} single sample within its window of length \(w\) contains that corresponding fault. Otherwise, if no sample within the sequence contains any fault, it is labeled as 'normal'.
+
 \subsection{Metrics}
 To evaluate the performance of the proposed HiFiNet and compare it with other methods, several standard classification metrics are employed. These metrics are calculated based on the number of true positives (TP), false positives (FP), true negatives (TN), and false negatives (FN) for each class. In a multi-class classification problem, these are often computed for each class $c_i$ in a set of classes $C = \{c_1, c_2, \dots, c_K\}$.
 
@@ -35,6 +50,7 @@ Similarly, the weighted average F1-score is calculated by:
 The experiment was conducted with the following parameters:
 \begin{itemize}
   \item Test period: 2024-05-24 to 2024-07-01 (MERRA-2), 2004-03-06 to 2004-03-07 (Intel)
+  \item \(w = 24\)
   \item \(b_\text{hardover}\ = 5\)
   \item \(b_\text{drift} = 0.3\)
   \item \(b_\text{spike} = 3\)
