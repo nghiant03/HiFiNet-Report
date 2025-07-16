@@ -60,7 +60,7 @@ The experiment was conducted with the following parameters:
 All experiment is implemented in Python and run inside Kaggle Notebook with a P100 GPU.
 
 \subsection{Evaluation Result}
-The overall classification accuracy, shown in Figure~\ref{fig:accuracy}, demonstrates a substantial uplift from HiFiNet. HiFiNet maintains a \(2\sim6\%\) accuracy advantage over the second-best model LSTM-AE. SVM and DBN lag behind with sub \(90\%\) and sub \(80\%\) accuracies respectively across datasets. More importantly, the accuracy of HiFiNet does not degrade significantly as fault rate increases when compared to other methods. This indicates that information from neighbors collected in HiFiNet has a major impact in stabilizing the performance when noise becomes more prevalent
+We now verify the two claims in Section~\ref{sec:method}: (i) edge-to-graph synergy, (ii) energy-aware tunability. The overall classification accuracy, shown in Figure~\ref{fig:accuracy}, demonstrates a substantial uplift from HiFiNet. HiFiNet maintains a \(2\sim6\%\) accuracy advantage over the second-best model LSTM-AE. SVM and DBN lag behind with sub \(90\%\) and sub \(80\%\) accuracies respectively across datasets. More importantly, the accuracy of HiFiNet does not degrade significantly as fault rate increases when compared to other methods. This indicates that information from neighbors collected in HiFiNet has a major impact in stabilizing the performance when noise becomes more prevalent
 
 \begin{figure}
   \centering
@@ -69,22 +69,13 @@ The overall classification accuracy, shown in Figure~\ref{fig:accuracy}, demonst
   \label{fig:accuracy}
 \end{figure}
 
-Figure~\ref{fig:f1} plots the F1-Score against the rising fault rates. This further reinforce HiFiNet robustness under noisy condition. HiFiNet achieve upwards of \(94.70\%\) and \(92.32\%\) for MERRA-2 and Intel \(5\%\) fault rate datasets respectively. Compare to LSTM-AE, SVM and DBN, this means a performance delta of \(2\)-\(20\%\) and \(4\)-\(16\%\) on the corresponding datasets, with other fault rate datasets following a similar story. These results suggest that temporal and spatial features utilization has contributes significantly to HiFiNet ability to accurately diagnose each class.
+To conduct further analysis into each method's discriminative performance, Figure~\ref{fig:pr_curve} plots Precision Recall curve at the highest stress level (20\% fault rate). The results clearly indicate that the HiFiNet model substantially outperforms the other methods, achieving an AUPRC of 0.927. Its curve dominates the others, maintaining high precision (above 0.95) for recall values up to approximately 0.8. The next best performing model is the LSTM-SAE, with an AUPRC of 0.719, followed by the SVM at 0.659 and the DBN at 0.590. Overall, the HiFiNet architecture demonstrates a superior balance of precision and recall for this classification task.
 
 \begin{figure}
   \centering
-  \includegraphics[width=\linewidth]{images/f1.png}
-  \caption{F1-Score versus Fault Rate comparison between HiFiNet and other methods.}
-  \label{fig:f1}
-\end{figure}
-
-To dissect the components of the F1-score, Figure~\ref{fig:pr_scatter} plots Precision versus Recall at the highest stress level (20\% fault rate). An ideal classifier would reside in the top-right corner, signifying perfect precision and recall. For both datasets, HiFiNet is positioned closest to this ideal point. This demonstrates that even in a highly corrupted environment, HiFiNet maintains a superior balance, successfully identifying a high proportion of actual faults (high recall) while simultaneously minimizing the number of false alarms (high precision).
-
-\begin{figure}
-  \centering
-  \includegraphics[width=\linewidth]{images/pr_scatter.png}
-  \caption{Precision-Recall scatter plot comparison between HiFiNet and other methods. Weight-Average Recall is always equal to Total Accuracy}
-  \label{fig:pr_scatter}
+  \includegraphics[width=\linewidth]{images/pr_curve.png}
+  \caption{Precision-Recall curves comparison between HiFiNet and other methods on Intel 20\% dataset.}
+  \label{fig:pr_curve}
 \end{figure}
 
 Next, Figure~\ref{fig:f1_drop} provides a direct, quantitative measure of model stability. It visualizes the absolute drop in F1-Score as the fault rate increases from 5\% to 20\%. A smaller bar indicates greater robustness against worsening data quality. HiFiNet clearly stands out with the smallest performance drop on both datasets (2.06 points for MERRA-2 and 3.93 for INTEL). In contrast, models like SVM and LSTM-AE experience much larger drops, exceeding 11 and 12 points, respectively. This bar chart offers a stark visual confirmation of HiFiNet's superior stability and reliability under varying conditions.
@@ -96,7 +87,16 @@ Next, Figure~\ref{fig:f1_drop} provides a direct, quantitative measure of model 
   \label{fig:f1_drop}
 \end{figure}
 
-While the previous figures provide a visual analysis of key performance trends, tHe complete numerical results for all metrics are consolidated in Table~\ref{tab:metrics} for reference.
+To further analyze HiFiNet's performance on a granular level, Figure~\ref{fig:confusion_matrix} provides the confusion matrix of the model. HiFiNet demonstrates high accuracy for several categories, correctly identifying the majority of instances for Normal, Hardover, Drift and Spike classes. However, performance on Stuck-at fault remains less than desirable with 42 misclassifications out of 175 samples. The model also has struggles with identifying Erratic fault with almost half of the instance in the class being misclassifications.
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\linewidth]{images/confusion_matrix.png}
+  \caption{Confusion Matrix of HiFiNet on Intel 20\% dataset.}
+  \label{fig:confusion_matrix}
+\end{figure}
+
+While the previous figures provide a visual analysis of key performance trends, the complete numerical results for all metrics are consolidated in Table~\ref{tab:metrics} for reference. In addition, a case study on the individual classification of HiFiNet is conducted in Section~\ref{case:classification}.
 
 \begin{table}
   \centering
