@@ -159,3 +159,25 @@ The results of this trade-off are presented in Figure~\ref{fig:accuracy_tradeoff
 Conversely, as the Time Delay \(t\) increases, the Network Classifier runs less frequently, drastically reducing the cumulative energy cost. This is reflected in the sharp, monotonic rise of the Energy Efficiency curve, which increases by more than rapidly goes from 0 to 11. This energy saving comes at the cost of accuracy. Since the spatial context is updated less often, its influence diminishes, causing the Accuracy Delta to fall,  and it becomes marginal for \(t > 8\).
 
 This analysis reveals that the system's configuration can be optimized based on deployment needs. For critical applications where maximum accuracy is paramount, a low time delay (\(t=0\) or \(t=1\)) is ideal. However, for long-term monitoring where network longevity is the primary concern, a higher time delay (\(t\ge4\)) can provide substantial energy savings with a modest drop in performance. The region between \(t=1\) and \(t=3\) represents a compelling trade-off where a significant portion of the accuracy gain (1.1\%-1.6\%) is retained while achieving a 2-3 times improvement in energy efficiency over the most aggressive configuration. This demonstrates the flexibility of the HiFiNet architecture, allowing operators to tune the model to strike the right balance between diagnostic accuracy and operational lifetime.
+
+\subsection{Case Study: A Comparative Analysis of HiFiNet Classifications}
+\label{case:classification}
+To offer a more qualitative understanding of HiFiNet's classification capabilities, this section presents a case study that contrasts its performance with the baseline LSTM-AE on specific fault instances. The analysis centers on two distinct examples of drift fault sequences and the corresponding t-SNE visualizations of the models' learned hidden layer representations.
+
+Figure~\ref{fig:classifications} provides two examples of drift sequences in the dataset. The second sequence displays a classic, gradual, and near-linear increase in temperature readings over time. In contrast, the first sequence presents a more complex and realistic scenario. It is characterized by an initial upward drift that is then interrupted by erratic fluctuations and a sudden drop. This type of non-linear, noisy drift is significantly more challenging to distinguish from normal operational variance. In this particular case, HiFiNet was able to correctly predict the classification of both sequences while LSTM-AE mistakes the sequences to be both from Normal class.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{images/classifications.png}
+    \caption{Examples of drift fault sequences in the test dataset and the models predictions.}
+    \label{fig:classifications}
+\end{figure}
+
+Figure~\ref{fig:tsne} sheds some light into this performance discrepancies of the two models by utilizing t-SNE method. For the LSTM-AE model, the visualization reveals significant confusion between the two classes. The representations of Normal (blue) and Drift (red) data are heavily interspersed, with no clear boundary separating them. Clusters are ill-defined, and many drift instances are scattered amidst normal data points, and vice-versa. The t-SNE plot for HiFiNet, however, tells a different story. The blue dots, representing Normal data, are concentrated in several distinct, dense clusters. This clear demarcation indicates that HiFiNet learns highly discriminative representations. The Drift data itself forms a tight, coherent cluster with little contamination, suggesting that the model effectively captures the unique signature of this fault type, even when presented with noisy and non-linear examples. This enhanced separability demonstrates that HiFiNet's hierarchical approach, which combines temporal analysis with spatial context from neighboring nodes, allows it to form a more robust and abstract representation of what constitutes a "drift". It can look beyond simple linear trends to identify the underlying anomalous behavior, a capability that leads to more accurate and reliable fault diagnosis in complex, real-world scenarios.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{images/tsne.png}
+    \caption{t-SNE visualization of both models hidden representations of the sequences before the classification layer.}
+    \label{fig:tsne}
+\end{figure}
