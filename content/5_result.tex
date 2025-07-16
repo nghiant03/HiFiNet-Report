@@ -12,9 +12,9 @@ Multiple datasets were generated with varying overall percentages of faulty inst
 
 The process for injecting fault to the dataset involves three main steps:
 \begin{itemize}
-    \item Filter the original dataset by chosen nodes and time range
-    \item Fault rate and the appropriate fault type are chosen for each node
-    \item Inject fault to each sample using Equation \ref{eq:hardover}, \ref{eq:drift}, \ref{eq:spike}, \ref{eq:erratic}, and \ref{eq:stuck}
+  \item Filter the original dataset by chosen nodes and time range
+  \item Fault rate and the appropriate fault type are chosen for each node
+  \item Inject fault to each sample using Equation \ref{eq:hardover}, \ref{eq:drift}, \ref{eq:spike}, \ref{eq:erratic}, and \ref{eq:stuck}
 \end{itemize}
 A sequence is assigned a specific fault type's label if \textbf{any} single sample within its window of length \(w\) contains that corresponding fault. Otherwise, if no sample within the sequence contains any fault, it is labeled as 'normal'.
 
@@ -167,17 +167,17 @@ To offer a more qualitative understanding of HiFiNet's classification capabiliti
 Figure~\ref{fig:classifications} provides two examples of drift sequences in the dataset. The second sequence displays a classic, gradual, and near-linear increase in temperature readings over time. In contrast, the first sequence presents a more complex and realistic scenario. It is characterized by an initial upward drift that is then interrupted by erratic fluctuations and a sudden drop. This type of non-linear, noisy drift is significantly more challenging to distinguish from normal operational variance. In this particular case, HiFiNet was able to correctly predict the classification of both sequences while LSTM-AE mistakes the sequences to be both from Normal class.
 
 \begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{images/classifications.png}
-    \caption{Examples of drift fault sequences in the test dataset and the models predictions.}
-    \label{fig:classifications}
+  \centering
+  \includegraphics[width=\linewidth]{images/classifications.png}
+  \caption{Examples of drift fault sequences in the test dataset and the models predictions.}
+  \label{fig:classifications}
 \end{figure}
 
 Figure~\ref{fig:tsne} sheds some light into this performance discrepancies of the two models by utilizing t-SNE method. For the LSTM-AE model, the visualization reveals significant confusion between the two classes. The representations of Normal (blue) and Drift (red) data are heavily interspersed, with no clear boundary separating them. Clusters are ill-defined, and many drift instances are scattered amidst normal data points, and vice-versa. The t-SNE plot for HiFiNet, however, tells a different story. The blue dots, representing Normal data, are concentrated in several distinct, dense clusters. This clear demarcation indicates that HiFiNet learns highly discriminative representations. The Drift data itself forms a tight, coherent cluster with little contamination, suggesting that the model effectively captures the unique signature of this fault type, even when presented with noisy and non-linear examples. This enhanced separability demonstrates that HiFiNet's hierarchical approach, which combines temporal analysis with spatial context from neighboring nodes, allows it to form a more robust and abstract representation of what constitutes a "drift". It can look beyond simple linear trends to identify the underlying anomalous behavior, a capability that leads to more accurate and reliable fault diagnosis in complex, real-world scenarios.
 
 \begin{figure}
-    \centering
-    \includegraphics[width=\linewidth]{images/tsne.png}
-    \caption{t-SNE visualization of both models hidden representations of the sequences before the classification layer.}
-    \label{fig:tsne}
+  \centering
+  \includegraphics[width=\linewidth]{images/tsne.png}
+  \caption{t-SNE visualization of both models hidden representations of the sequences before the classification layer.}
+  \label{fig:tsne}
 \end{figure}
