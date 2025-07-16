@@ -1,26 +1,18 @@
 Our goal is to detect and label faults in wireless sensor networks (WSNs) from each node’s time-series data and its spatial context. The expected output is a fault label (or “normal”) for every data segment.
 
-We achieve this with HiFiNet, a two-stage architecture that:
-\begin{itemize}
-    \item Learns per-node representations: train an LSTM autoencoder that compresses each signal and provides an initial fault prediction at the edge.
-    \item Refines with network context: periodically aggregate embeddings at the server where an Iterative Graph Network propagates attention across neighbors to produce the final fault labels.
-\end{itemize}
+We propose HiFiNet, a Hierarchical Fault Identification Network, for the classification of sensor faults in WSNs. HiFiNet jointly leverages per-node temporal features and network‐level interactions to outperform single-level baselines. Moving beyond conventional approaches, our key innovations lie in the novel integration of a confidence-guided Graph Attention Network. This architecture establishes a new paradigm for fault diagnosis by dynamically learning to trust and weigh information from individual sensors and the broader network context. We will demonstrate how this sophisticated approach leads to a more robust and accurate fault identification system with the ability to balance between performance and energy consumption. The overall inference pipeline is depicted in Figure~\ref{fig:hifinet}.
 
-This overview reminds readers of the task, clarifies the desired output, and maps the key steps that follow.
-
-\subsection{Hierarchical Fault Identification Network (HiFiNet)}
 \begin{figure}
   \centering
   \includegraphics[width=0.8\linewidth]{images/HiFiNet.png}
   \caption{Proposed HiFiNet inference pipeline, illustrating the Edge Classifier processing a target node's temperature sequence and the Network Classifier integrating edge outputs with contextual network data.}
   \label{fig:hifinet}
 \end{figure}
-We propose HiFiNet, a Hierarchical Fault Identification Network, for the classification of sensor faults in WSNs. HiFiNet jointly leverages per-node temporal features and network‐level interactions to outperform single-level baselines. Moving beyond conventional approaches, our key innovations lie in the novel integration of a confidence-guided Graph Attention Network. This architecture establishes a new paradigm for fault diagnosis by dynamically learning to trust and weigh information from individual sensors and the broader network context. We will demonstrate how this sophisticated approach leads to a more robust and accurate fault identification system. The overall inference pipeline is depicted in Figure~\ref{fig:hifinet}.
 
-\subsubsection{Edge Classifier}
-The first stage of HiFiNet is the Edge Classifier. This component's primary role is to analyze the time-series data from an individual target sensor node. Through this analysis, it extracts discriminative features and performs an initial fault classification. The design of the Edge Classifier involves a two-phase training process. It begins with the unsupervised pre-training of a feature extractor, which is based on a Long Short-Term Memory Stacked Autoencoder (LSTM-SAE) architecture. This is followed by a supervised fine-tuning phase for the fault classification task. The specifics of this training methodology, including the mathematical formulations for the pre-training and fine-tuning stages, are detailed in Appendix~\ref{app:edge_training}. The edge logits and the learned embedding are then forwarded to the network layer to serve as the initial node states, denoted as \(\mathcal{H}^{(0)}\).
+\subsection{Edge Classifier}
+The first stage of HiFiNet is the Edge Classifier. This component's primary role is to analyze the time-series data from an individual target sensor node. Through this analysis, it extracts discriminative features and performs an initial fault classification. The design of the Edge Classifier involves a two-phase training process. It begins with the unsupervised pre-training of a feature extractor, which is based on the LSTM-SAE architecture. This is followed by a supervised fine-tuning phase for the fault classification task. The specifics of this training methodology are detailed in \ref{app:edge_training}. The edge logits and the learned embedding are then forwarded to the network layer to serve as the initial node states, denoted as \(\mathcal{H}^{(0)}\).
 
-\subsubsection{Iterative Graph Network}
+\subsection{Iterative Graph Network}
 The second stage of HiFiNet is the IGN, which refines the initial fault assessments or embeddings from the Edge Classifier by incorporating network-wide spatial context and inter-node dependencies. The core of the Network Classifier is an IGN. Figure~\ref{fig:ign} depicts the information flow in an IGN.
 
 \begin{figure}
@@ -64,4 +56,4 @@ In each iteration \(k = 0, \dots, K\):
     This results in a confidence vector \(\mathbf{c}^{(k)}\), which is then used in the Feature Modulation step of the next iteration (\(k+1\)). This iterative process allows the model to progressively refine its understanding by focusing subsequent GAT operations based on the certainty of intermediate predictions.
 \end{itemize}
 
-After \(K\) iterations, the final GAT output \(\mathcal{H}_{\text{G}}^{(K_{iter}-1)}\) represents the spatially-refined node embeddings. This and the original representation are then passed to a classification head to output the network classification.
+After \(K\) iterations, the final GAT output \(\mathcal{H}_{\text{G}}^{(K_{iter}-1)}\) represents the spatially-refined node embeddings. This and the original representation are then passed to a classification head to output the network classification. At inference, only the encoder and the IGN forward pass is needed, the reconstruction branch is omitted.
